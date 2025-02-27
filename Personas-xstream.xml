@@ -1,0 +1,38 @@
+<ListaPersonasMunicipio>
+  <DatosPerson>
+    <nombre>Ana</nombre>
+    <edad>14</edad>
+  </DatosPerson>
+  <DatosPerson>
+    <nombre>Luis Miguel</nombre>
+    <edad>15</edad>
+  </DatosPerson>
+  <DatosPerson>
+    <nombre>Alicia</nombre>
+    <edad>13</edad>
+  </DatosPerson>
+  <DatosPerson>
+    <nombre>Pedro</nombre>
+    <edad>15</edad>
+  </DatosPerson>
+  <DatosPerson>
+    <nombre>Manuel</nombre>
+    <edad>16</edad>
+  </DatosPerson>
+  <DatosPerson>
+    <nombre>Andrés</nombre>
+    <edad>12</edad>
+  </DatosPerson>
+  <DatosPerson>
+    <nombre>Julio</nombre>
+    <edad>16</edad>
+  </DatosPerson>
+  <DatosPerson>
+    <nombre>Antonio</nombre>
+    <edad>14</edad>
+  </DatosPerson>
+  <DatosPerson>
+    <nombre>María Jesús</nombre>
+    <edad>13</edad>
+  </DatosPerson>
+</ListaPersonasMunicipio>
