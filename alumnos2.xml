@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alumnos>
+    <alumno>
+        <nombre>Ana</nombre>
+        <apellido>García</apellido>
+        <calificaciones>
+            <primer_examen>8.5</primer_examen>
+            <segundo_examen>9.0</segundo_examen>
+        </calificaciones>
+        <media>8.8</media>
+    </alumno>
+    <alumno>
+        <nombre>Carlos</nombre>
+        <apellido>Rodríguez</apellido>
+        <calificaciones>
+            <primer_examen>7.0</primer_examen>
+            <segundo_examen>7.5</segundo_examen>
+        </calificaciones>
+        <media>7.3</media>
+    </alumno>
+    <alumno>
+        <nombre>Laura</nombre>
+        <apellido>Martínez</apellido>
+        <calificaciones>
+            <primer_examen>9.5</primer_examen>
+            <segundo_examen>9.8</segundo_examen>
+        </calificaciones>
+        <media>9.7</media>
+    </alumno>
+</alumnos>
