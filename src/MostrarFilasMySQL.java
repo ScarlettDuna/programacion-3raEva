@@ -1,6 +1,6 @@
 import java.sql.*;
 
-public class AccesoBDMySQL {
+public class MostrarFilasMySQL {
     public static void main(String[] args) {
         try {
             // Cargar el driver
@@ -11,10 +11,14 @@ public class AccesoBDMySQL {
             Statement sentencia = conexion.createStatement();
             String sql = "SELECT * FROM departamentos";
             ResultSet result = sentencia.executeQuery(sql);
-            // Recorremos el resultado para visualizar cada fila
-            // Se hace un bucle mientras haya registros y se van mostrando
+            // Nos situamos en el último registro
+            result.last();
+            System.out.println("Número de filas: " + result.getRow());
+            // Nos situamos antes del primer registro
+            result.beforeFirst();
             while (result.next()){
-                System.out.printf("%d, %s, %s %n",
+                System.out.printf("Fila %d: %d, %s, %s %n",
+                        result.getRow(),
                         result.getInt(1),
                         result.getString(2),
                         result.getString(3));
@@ -29,5 +33,4 @@ public class AccesoBDMySQL {
             e.printStackTrace();
         }
     }
-
 }
