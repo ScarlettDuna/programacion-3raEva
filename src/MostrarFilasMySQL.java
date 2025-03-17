@@ -8,7 +8,7 @@ public class MostrarFilasMySQL {
             // Establecer la conexión con la BD
             Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/ejemplo?serverTimezone=Europe/Madrid", "anchanDB", "AnchanDB2025");
             // Preparar la consulta
-            Statement sentencia = conexion.createStatement();
+            Statement sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             String sql = "SELECT * FROM departamentos";
             ResultSet result = sentencia.executeQuery(sql);
             // Nos situamos en el último registro
@@ -27,9 +27,7 @@ public class MostrarFilasMySQL {
             sentencia.close(); // Cerrar Statements
             conexion.close(); // Cerrar conexión
 
-        } catch (ClassNotFoundException cn) {
-            cn.printStackTrace();
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
