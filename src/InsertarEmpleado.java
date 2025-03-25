@@ -1,7 +1,7 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class InsertarEmpleado {
     public static void main(String[] args) {
@@ -14,36 +14,73 @@ public class InsertarEmpleado {
             String apellido = args[1];
             String oficio = args[2];
             String dir = args[3];
-            String fecha_alta = args[4];
-            String salario = args[5];
-            String comision = args[6];
-            String dept_no = args[7];
-            // Construir orden "insertar"
-            // INSERT INTO empleados VALUES (7369, 'SANCHEZ', 'EMPLEADO', 7902, '1990-10-26', 2500, NULL, 10);
-            String sql = String.format("INSERT INTO empleados VALUES (%s, '%s', '%s', %s, '%s', %s, %s, %s);", emp_no, apellido, oficio, dir, fecha_alta, salario, comision, dept_no);
-            System.out.println(sql);
+            String salario = args[4];
+            String comision = args[5];
+            String dept_no = args[6];
+
             Statement sentencia = conexion.createStatement();
             // Comprobación de requisitos
             // Existe el departamento
-            String sqlDep = String.format("Select %s FROM departamentos", dept_no);
-            Boolean valorDep = sentencia.execute(sqlDep);
+            String sqlDep = String.format("Select * FROM departamentos WHERE dept_no = %s", dept_no);
+            ResultSet resultDep = sentencia.executeQuery(sqlDep);
+            if (!resultDep.next()) {
+                System.out.println("Error: El departamento no existe.");
+                resultDep.close();
+                return;
+            }
 
             // NO existe ya el número de empleado
-            String sqlEmp_no = String.format("Select %s FROM empleados", emp_no);
-            Boolean valorEmp_no = sentencia.execute(sqlDep);
+            String sqlEmp_no = String.format("Select * FROM empleados WHERE emp_no = %s", emp_no);
+            ResultSet resultEmp_no = sentencia.executeQuery(sqlEmp_no);
+            if (resultEmp_no.next()) {
+                System.out.println("Error: El empleado ya existe.");
+                resultEmp_no.close();
+                return;
+            }
 
             // Salario es superior a 0
-            boolean salario_mayor0 = Integer.parseInt(salario) > 0;
+            int salarioInt = Integer.parseInt(salario);
+            if (salarioInt < 0) {
+                System.out.println("Error: El salario no puede ser inferior a cero.");
+                return;
+            }
 
             // Dir existe
-            String sqlDir = String.format("Select %s FROM empleados", dir);
-            Boolean valorDir = sentencia.execute(sqlDir);
+            String sqlDir = String.format("Select * FROM empleados WHERE emp_no = %s", dir);
+            ResultSet resultDir = sentencia.executeQuery(sqlDir);
+            if (!resultDir.next()) {
+                System.out.println("Error: El director no existe.");
+                resultDir.close();
+                return;
+            }
+
+            // Apellido y Oficio no son null
+            if (apellido == null || apellido.isEmpty() || oficio == null || oficio.isEmpty()) {
+                System.out.println("Error: El apellido y el oficio no pueden ser nulos.");
+                return;
+            }
+
+            //Si todos los requisitos se han cumplido
+            // Construir orden "insertar"
+            // INSERT INTO empleados VALUES (7369, 'SANCHEZ', 'EMPLEADO', 7902, '1990-10-26', 2500, NULL, 10);
+            String sql;
+            if (comision.equalsIgnoreCase("NULL")) {
+                sql = String.format("INSERT INTO empleados VALUES (%s, '%s', '%s', %s, '%s', %s, NULL, %s);", emp_no, apellido, oficio, dir, LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), salario, dept_no);
+            } else {
+                sql = String.format("INSERT INTO empleados VALUES (%s, '%s', '%s', %s, '%s', %s, %s, %s);", emp_no, apellido, oficio, dir, LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), salario, comision, dept_no);
+            }
+            System.out.println(sql);
 
             int filas = sentencia.executeUpdate(sql);
             System.out.printf("Filas afectadas: %d %n", filas);
+
             sentencia.close();
             conexion.close();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (NumberFormatException | DateTimeParseException | ClassNotFoundException e) {
+            System.out.println("Error con los datos");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("Error de SQL.");
             e.printStackTrace();
         }
     }
