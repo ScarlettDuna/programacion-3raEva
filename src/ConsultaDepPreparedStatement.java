@@ -1,9 +1,10 @@
 import java.sql.*;
+import java.sql.PreparedStatement;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-public class PreparedStatement2 {
+public class ConsultaDepPreparedStatement {
     public static void main(String[] args) {
         if (args.length !=1 ) {
             System.out.println("Error: debes proporcionar el número de departamento como argumento.");
@@ -20,6 +21,7 @@ public class PreparedStatement2 {
             // Verificar el departamento
             String sqlVerificar = "SELECT dnombre FROM departamentos WHERE dept_no = ?";
             PreparedStatement sentenciaVerifivar = conexion.prepareStatement(sqlVerificar);
+            sentenciaVerifivar.setInt(1, Integer.parseInt(dep));
             ResultSet resultDep = sentenciaVerifivar.executeQuery();
 
             if (!resultDep.next()){
@@ -33,7 +35,7 @@ public class PreparedStatement2 {
             sentenciaVerifivar.close();
 
             // Construir orden PreparedStatement
-            String sqlEmpleados = "SELECT e.apellido, e.salario, e.oficio FROM empleados e JOIN departamentos d ON e.dept_no = d.dept_no WHERE dept_no = ?";
+            String sqlEmpleados = "SELECT apellido, salario, oficio FROM empleados WHERE dept_no = ?";
             // Preparamos la sentencia
             PreparedStatement sentenciaEmpleados = conexion.prepareStatement(sqlEmpleados);
             sentenciaEmpleados.setInt(1, Integer.parseInt(dep));
