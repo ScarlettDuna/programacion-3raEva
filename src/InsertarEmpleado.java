@@ -5,6 +5,20 @@ import java.time.format.DateTimeParseException;
 
 public class InsertarEmpleado {
     public static void main(String[] args) {
+
+        //
+        // CREATE TABLE `categories` (
+        //   `category_id` int(11) AUTO_INCREMENT,
+        //   `category_name` varchar(150) DEFAULT NULL,
+        //   `remarks` varchar(500) DEFAULT NULL,
+        //   PRIMARY KEY (`category_id`)
+        // );
+        //
+        // INSERT INTO categories (category_name, remarks) VALUES ('Electrónica', 'Productos electrónicos y gadgets.');
+        // INSERT INTO categories (category_name, remarks) VALUES ('Ropa', 'Indumentaria para todas las edades y estilos.');
+        // INSERT INTO categories (category_name) VALUES ('Hogar'); -- Sin remarks
+        // INSERT INTO categories (category_id, category_name, remarks) VALUES (10, 'Jardinería', 'Artículos para el cuidado del jardín.'); -- Especificando ID (si no es AUTO_INCREMENT o si quieres un valor específico)
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
             // Establecer la conexión con la BD
