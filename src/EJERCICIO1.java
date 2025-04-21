@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -9,7 +10,7 @@ public class EJERCICIO1 {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             // Establecer la conexión con la BD
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/examen9abril", "root", "Anchan24");
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/examen9abril", "anchanDB", "AnchanDB2025");
             Statement sentencia = conexion.createStatement();
 
             System.out.println("¿Qué deseas hacer? Insertar artículos (1), insertar pedidos (2), visualizar pedidos (3) o mostrar artículos (4)");
@@ -19,12 +20,33 @@ public class EJERCICIO1 {
             if (opcion == 1) {
                 // Introducir articulo
                 System.out.println("Introduce el artículo.");
-                String sqlArt= sc.next();
+                String sqlArt;
+                while (true) {
+                    System.out.println("Introduce la sentencia INSERT completa para el artículo (o 'salir' para cancelar):");
+                    sqlArt = sc.nextLine().trim();
 
-                // INSERT INTO articulos VALUES (25,'LATA ALCACHOFAS', 27.5, '2028-12-10', 130);
-                int filas = sentencia.executeUpdate(sqlArt);
-                System.out.printf("Filas afectadas: %d %n", filas);
+                    if (sqlArt.equalsIgnoreCase("salir")) {
+                        System.out.println("Inserción de artículo cancelada.");
+                        break;
+                    }
+                    if (!sqlArt.isEmpty()) {
+                        try {
+                            int filas = sentencia.executeUpdate(sqlArt);
+                            if (filas > 0) {
+                                System.out.printf("Inserción exitosa. Filas afectadas: %d %n", filas);
+                                break; // Salir del bucle si la inserción fue exitosa
+                            } else {
+                                System.out.println("No se insertó ningún artículo. Por favor, inténtalo de nuevo.");
+                            }
 
+                        } catch (SQLException e) {
+                            System.out.println("Error de SQL: " + e.getMessage() + ". Por favor, inténtalo de nuevo.");
+                            e.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("La sentencia no puede estar vacía. Por favor, inténtalo de nuevo.");
+                    }
+                }
             } else if (opcion == 2) {
                 // Introducir pedido
                 System.out.println("Debe insertar el id del comprador, el id del articulo, y la cantidad.");
@@ -69,14 +91,15 @@ public class EJERCICIO1 {
 
             } else if (opcion == 3) {
                 // Visualizar pedidos
-                String sql = "SELECT * FROM pedidos";
+                String sql = "SELECT p.codpedido, p.fechapedido, p.idcomprador, a.nombre, a.precio, p.cantidad, a.precio * p.cantidad as total FROM pedidos p JOIN articulos a ON p.idarticulo = a.cod";
                 Boolean valor = sentencia.execute(sql);
 
                 if (valor) {
                     ResultSet result = sentencia.getResultSet();
+                    DecimalFormat df = new DecimalFormat("##,###.00");
                     while (result.next()) {
-                        System.out.printf("Código pedido: %d, fecha pedidos: %s, id comprador: %d, id artículo: %d %n",
-                                result.getInt(1), result.getString(2), result.getInt(3), result.getInt(4));
+                        System.out.printf("Código pedido: %d, fecha pedidos: %s, id comprador: %d, nombre artículos: %s, precio artículo: %s, cantidad: %d, total: %s %n",
+                                result.getInt(1), result.getString(2), result.getInt(3), result.getString(4), df.format(result.getFloat(5)), result.getInt(6), df.format(result.getFloat(7))); // Usa df.format()
                     }
                     result.close();
                 } else {
