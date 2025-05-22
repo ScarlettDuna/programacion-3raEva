@@ -23,7 +23,7 @@ public class ConsultarDepartGraf extends JFrame implements ActionListener{
     // Variables JDBC
     private Connection conexion = null;
     private Statement sentencia = null;
-    private ResultSet rs = null; // ResultSet que se usará para navegar
+    private ResultSet rs = null;
 
     public ConsultarDepartGraf(){
         setTitle("Consulta de Departamentos");
@@ -40,17 +40,26 @@ public class ConsultarDepartGraf extends JFrame implements ActionListener{
         titulo.setFont(new Font("Arial", Font.BOLD, 16));
         panelTitulo.add(titulo);
         add(panelTitulo, BorderLayout.NORTH);
-        add(panelDatos, BorderLayout.CENTER);
-        add(panelBotones, BorderLayout.SOUTH);
 
         JPanel panelDatos = new JPanel();
         panelDatos.setLayout(new BoxLayout(panelDatos, BoxLayout.Y_AXIS));
-        panelDatos.add(l_codDepartamento);
-        panelDatos.add(codDepartamento);
-        panelDatos.add(l_nomDepartamento);
-        panelDatos.add(nomDepartamento);
-        panelDatos.add(l_localidadDept);
-        panelDatos.add(localidadDept);
+        panelDatos.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
+
+        JPanel rowCod = new JPanel(new FlowLayout(FlowLayout.LEFT)); // FlowLayout para JLabel y JTextField en la misma línea
+        rowCod.add(l_codDepartamento);
+        rowCod.add(codDepartamento);
+        panelDatos.add(rowCod);
+
+        JPanel rowNom = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        rowNom.add(l_nomDepartamento);
+        rowNom.add(nomDepartamento);
+        panelDatos.add(rowNom);
+
+        JPanel rowLoc = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        rowLoc.add(l_localidadDept);
+        rowLoc.add(localidadDept);
+        panelDatos.add(rowLoc);
+
         // Para que no sean editables
         codDepartamento.setEditable(false);
         nomDepartamento.setEditable(false);
@@ -67,26 +76,26 @@ public class ConsultarDepartGraf extends JFrame implements ActionListener{
         button_siguiente.addActionListener(this);
         button_anterior.addActionListener(this);
         button_ultimo.addActionListener(this);
+        // añadir los paneles de los datos y los botones al central
+        add(panelDatos, BorderLayout.CENTER);
+        add(panelBotones, BorderLayout.SOUTH);
 
         pack();
         setLocationRelativeTo(null);
 
-        // ... después de añadir panelBotones al JFrame ...
-
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver"); // Asegúrate de tener el driver JDBC de MySQL
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost/ejemplo", "Anchan24", "Anchan24");
+            Class.forName("com.mysql.jdbc.Driver"); // Asegúrate de tener el driver JDBC de MySQL
+            conexion = DriverManager.getConnection("jdbc:mysql://localhost/ejemplo", "root", "Anchan24");
 
             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            rs = sentencia.executeQuery("SELECT dept_no, dnombre, loc FROM dept ORDER BY dept_no");
+            rs = sentencia.executeQuery("SELECT dept_no, dnombre, loc FROM departamentos ORDER BY dept_no");
 
             // Muestra el primer registro al iniciar
-            if (rs.first()) { // Mueve el cursor al primer registro
-                mostrarRegistro(); // Llama a un método para mostrar el registro actual
+            if (rs.first()) {
+                mostrarRegistro();
             } else {
                 // Manejar caso donde no hay departamentos
                 System.out.println("No se encontraron departamentos.");
-                // Opcional: deshabilitar botones o mostrar mensaje en la interfaz
             }
 
         } catch (ClassNotFoundException ex) {
@@ -101,9 +110,48 @@ public class ConsultarDepartGraf extends JFrame implements ActionListener{
         setLocationRelativeTo(null);
 
     }
+    private void mostrarRegistro() throws SQLException {
+        codDepartamento.setText(String.valueOf(rs.getInt("dept_no")));
+        nomDepartamento.setText(rs.getString("dnombre"));
+        localidadDept.setText(rs.getString("loc"));
+    }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
-        // Lógica
+        try {
+            if (e.getSource() == button_primero) {
+                if (rs.first()) {
+                    mostrarRegistro();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Ya estás en el primer departamento.", "Navegación", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else if (e.getSource() == button_siguiente) {
+                if (!rs.isLast()) {
+                    if (rs.next()) {
+                        mostrarRegistro();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Ya estás en el último departamento.", "Navegación", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else if (e.getSource() == button_anterior) {
+                if (!rs.isFirst()) { // Comprueba si NO estamos en el primer registro
+                    if (rs.previous()) {
+                        mostrarRegistro();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Ya estás en el primer departamento.", "Navegación", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else if (e.getSource() == button_ultimo) {
+                if (rs.last()) {
+                    mostrarRegistro();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Ya estás en el último departamento.", "Navegación", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error de base de datos durante la navegación: " + ex.getMessage(), "Error SQL", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

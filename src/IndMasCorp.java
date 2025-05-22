@@ -132,7 +132,7 @@ public class IndMasCorp extends JFrame implements ActionListener {
                 } else { // imc >= 30
                     composicionCorporal = "Obesidad";
                 }
-                resultado_text.setText(String.format("Tu IMC es %.2f - %s", imc, composicionCorporal));
+                resultado_text.setText(String.format("%.2f - %s", imc, composicionCorporal));
                 resultado_text.setBackground(new Color(153, 204, 0)); // Volver al verde
             } catch (NumberFormatException ex) {
                 resultado_text.setText("Error: Ingresa números válidos en estatura y peso.");
