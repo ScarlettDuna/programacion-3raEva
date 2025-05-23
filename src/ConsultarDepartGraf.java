@@ -29,7 +29,7 @@ public class ConsultarDepartGraf extends JFrame implements ActionListener{
         setTitle("Consulta de Departamentos");
         setSize(1200, 1600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // Establece un LayoutManager para el JFrame principal (por ejemplo, BorderLayout o GridLayout o BoxLayout).
+        // Establece un LayoutManager para el JFrame principal
         setLayout(new BorderLayout());
 
         JPanel panelCentral = new JPanel();
@@ -45,7 +45,8 @@ public class ConsultarDepartGraf extends JFrame implements ActionListener{
         panelDatos.setLayout(new BoxLayout(panelDatos, BoxLayout.Y_AXIS));
         panelDatos.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
 
-        JPanel rowCod = new JPanel(new FlowLayout(FlowLayout.LEFT)); // FlowLayout para JLabel y JTextField en la misma línea
+
+        JPanel rowCod = new JPanel(new FlowLayout(FlowLayout.LEFT));
         rowCod.add(l_codDepartamento);
         rowCod.add(codDepartamento);
         panelDatos.add(rowCod);
@@ -84,7 +85,7 @@ public class ConsultarDepartGraf extends JFrame implements ActionListener{
         setLocationRelativeTo(null);
 
         try {
-            Class.forName("com.mysql.jdbc.Driver"); // Asegúrate de tener el driver JDBC de MySQL
+            Class.forName("com.mysql.jdbc.Driver"); 
             conexion = DriverManager.getConnection("jdbc:mysql://localhost/ejemplo", "root", "Anchan24");
 
             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
